@@ -147,6 +147,15 @@ class AppDataStore(private val context: Context) {
         }
     }
 
+    suspend fun resetShakyAndComfortData() {
+        context.soberDataStore.edit { prefs ->
+            prefs[Keys.SHAKY_COUNT_TODAY] = 0
+            prefs[Keys.SHAKY_TIMESTAMPS] = ""
+            prefs[Keys.COMFORT_READY_FLAG] = false
+            prefs[Keys.COMFORT_MESSAGE_SHOWN] = false
+        }
+    }
+
     suspend fun resetAllData() {
         context.soberDataStore.edit { prefs ->
             prefs.clear()

@@ -71,13 +71,34 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         initialValue = MainUiState()
     )
 
+    private val _lastCheckedDate = MutableStateFlow(LocalDate.now())
+    val lastCheckedDate: StateFlow<LocalDate> = _lastCheckedDate.asStateFlow()
+
     init {
         viewModelScope.launch {
             initializeIfFirstLaunch()
-            repository.checkAndResetIfNewDay()
-            restoreShakyTimerIfNeeded()
+            val didReset = repository.checkAndResetIfNewDay()
+            if (didReset) {
+                clearShakyTimer()
+            } else {
+                restoreShakyTimerIfNeeded()
+            }
+            _lastCheckedDate.value = LocalDate.now()
         }
         scheduleMidnightReset()
+    }
+
+    fun checkDateChange() {
+        viewModelScope.launch {
+            val today = LocalDate.now()
+            if (_lastCheckedDate.value.isBefore(today)) {
+                val didReset = repository.checkAndResetIfNewDay()
+                if (didReset) {
+                    clearShakyTimer()
+                }
+                _lastCheckedDate.value = today
+            }
+        }
     }
 
     private suspend fun initializeIfFirstLaunch() {
@@ -177,7 +198,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 val delayMs = Duration.between(now, nextMidnight).toMillis()
                 delay(delayMs)
 
-                repository.checkAndResetIfNewDay()
+                checkDateChange()
             }
         }
     }

@@ -47,11 +47,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sobercompanion.SoberCompanionApp
 import com.sobercompanion.data.datastore.UserPreferencesRepository
 import com.sobercompanion.data.local.entity.MotivationalQuote
 import com.sobercompanion.data.repository.SobrietyRepository
+import com.sobercompanion.ui.components.ComfortMessageCard
+import com.sobercompanion.util.ComfortMessageProvider
+import com.sobercompanion.viewmodel.MainViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -61,12 +67,14 @@ fun HomeScreen(
     onNavigateToDailyLog: () -> Unit,
     onNavigateToStatistics: () -> Unit,
     onNavigateToMilestones: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    mainViewModel: MainViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val userPreferencesRepository = UserPreferencesRepository(context)
     val sobrietyRepository = SobrietyRepository(SoberCompanionApp.instance.database.sobrietyDao())
+    val mainUiState by mainViewModel.uiState.collectAsState()
 
     val userName by userPreferencesRepository.userName.collectAsState(initial = "")
     val activeSobriety by sobrietyRepository.activeSobrietyRecord.collectAsState(initial = null)
@@ -76,6 +84,18 @@ fun HomeScreen(
 
     LaunchedEffect(Unit) {
         quote = sobrietyRepository.getRandomQuote()
+    }
+
+    // 날짜 변경 감지: 30초마다 현재 날짜를 확인하여 자정이 지났으면 리셋
+    val lastCheckedDate by mainViewModel.lastCheckedDate.collectAsState()
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(30_000)
+            val today = LocalDate.now()
+            if (lastCheckedDate.isBefore(today)) {
+                mainViewModel.checkDateChange()
+            }
+        }
     }
 
     val soberDays = activeSobriety?.let {
@@ -119,6 +139,15 @@ fun HomeScreen(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Comfort Message Card
+            if (mainUiState.comfortReady && !mainUiState.comfortShown) {
+                ComfortMessageCard(
+                    message = ComfortMessageProvider.getMessage(mainUiState.shakyCountToday),
+                    onDismiss = { mainViewModel.onComfortMessageSeen() }
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
             // Greeting
             if (userName.isNotEmpty()) {
                 Text(

@@ -118,14 +118,16 @@ class SoberRepository(private val dataStore: AppDataStore) {
         dataStore.setComfortReadyFlag(false)
     }
 
-    suspend fun checkAndResetIfNewDay() {
+    suspend fun checkAndResetIfNewDay(): Boolean {
         val lastDate = dataStore.lastRecordDate.first()
         val today = LocalDate.now()
 
         if (lastDate != null && lastDate.isBefore(today)) {
-            dataStore.resetDailyData()
+            dataStore.resetShakyAndComfortData()
             updateStreak()
+            return true
         }
+        return false
     }
 
     private suspend fun updateStreak() {
