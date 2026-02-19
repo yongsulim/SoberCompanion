@@ -1,6 +1,7 @@
 package com.sobercompanion.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
@@ -25,35 +26,44 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun ComfortMessageCard(
+    show: Boolean,
     message: String,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var visible by remember { mutableStateOf(false) }
 
-    // Fade in on appear, auto-dismiss after 3 seconds
-    LaunchedEffect(Unit) {
-        visible = true
-        delay(3_000)
-        visible = false
-        delay(500) // Wait for fade out animation to finish
-        onDismiss()
+    LaunchedEffect(show) {
+        if (show) {
+            visible = true
+            delay(3_000)
+            if (visible) {
+                visible = false
+                delay(500)
+                onDismiss()
+            }
+        } else {
+            visible = false
+        }
     }
 
     AnimatedVisibility(
         visible = visible,
-        enter = fadeIn(animationSpec = androidx.compose.animation.core.tween(500)),
-        exit = fadeOut(animationSpec = androidx.compose.animation.core.tween(500))
+        enter = fadeIn(animationSpec = tween(500)),
+        exit = fadeOut(animationSpec = tween(500))
     ) {
         Card(
             modifier = modifier
                 .fillMaxWidth()
+                .padding(bottom = 12.dp)
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
                 ) {
-                    visible = false
-                    onDismiss()
+                    if (visible) {
+                        visible = false
+                        onDismiss()
+                    }
                 },
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer

@@ -140,13 +140,11 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Comfort Message Card
-            if (mainUiState.comfortReady && !mainUiState.comfortShown) {
-                ComfortMessageCard(
-                    message = ComfortMessageProvider.getMessage(mainUiState.shakyCountToday),
-                    onDismiss = { mainViewModel.onComfortMessageSeen() }
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-            }
+            ComfortMessageCard(
+                show = mainUiState.comfortReady && !mainUiState.comfortShown,
+                message = ComfortMessageProvider.getMessage(mainUiState.shakyCountToday),
+                onDismiss = { mainViewModel.onComfortMessageSeen() }
+            )
 
             // Greeting
             if (userName.isNotEmpty()) {

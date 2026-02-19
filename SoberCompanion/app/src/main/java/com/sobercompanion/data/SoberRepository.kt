@@ -77,7 +77,6 @@ class SoberRepository(private val dataStore: AppDataStore) {
     suspend fun startTracking(date: LocalDate = LocalDate.now()) {
         dataStore.setStartDate(date)
         dataStore.setCurrentStreak(0)
-        dataStore.setLastRecordDate(date)
         dataStore.resetDailyData()
     }
 
@@ -101,7 +100,6 @@ class SoberRepository(private val dataStore: AppDataStore) {
         dataStore.setDailyStatus(RecordStatus.SHAKY)
         dataStore.addShakyTimestamp(LocalDateTime.now())
         dataStore.setComfortReadyFlag(true)
-        dataStore.setLastRecordDate(LocalDate.now())
     }
 
     suspend fun recordFail() {
@@ -120,9 +118,15 @@ class SoberRepository(private val dataStore: AppDataStore) {
 
     suspend fun checkAndResetIfNewDay(): Boolean {
         val lastDate = dataStore.lastRecordDate.first()
+        val timestamps = dataStore.shakyTimestamps.first()
         val today = LocalDate.now()
 
-        if (lastDate != null && lastDate.isBefore(today)) {
+        val lastActivityDate = listOfNotNull(
+            lastDate,
+            timestamps.lastOrNull()?.toLocalDate()
+        ).maxOrNull()
+
+        if (lastActivityDate != null && lastActivityDate.isBefore(today)) {
             dataStore.resetShakyAndComfortData()
             updateStreak()
             return true

@@ -71,7 +71,7 @@ fun MainScreen(
                 text = "지금 좀 흔들려",
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                enabled = !uiState.hasRecordedToday,
+                enabled = true,
                 onClick = { viewModel.onShaky() }
             )
 
