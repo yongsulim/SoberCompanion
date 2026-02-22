@@ -1,13 +1,34 @@
 package com.sobercompanion.util
 
+/**
+ * 흔들림 횟수에 따라 적절한 위로 메시지를 선택하는 유틸리티 오브젝트.
+ *
+ * 메시지 선택 전략:
+ * - 1~3번째 흔들림: 고정 메시지 (순서대로, 점진적으로 공감 강도 높아짐)
+ * - 4번째 이상: 순환 메시지 (인덱스 % 크기로 무한 순환)
+ *
+ * 메시지 추가/수정 시 FIXED_MESSAGES(3개 고정)와
+ * ROTATING_MESSAGES(개수 자유)를 별도로 관리합니다.
+ */
 object ComfortMessageProvider {
 
+    /**
+     * 처음 1~3번 흔들릴 때 순서대로 보여주는 고정 메시지.
+     * 첫 번째는 가볍게, 세 번째는 더 공감하는 톤으로 설계됐습니다.
+     *
+     * 인덱스: shakyCountToday - 1 (1번 → [0], 2번 → [1], 3번 → [2])
+     */
     private val FIXED_MESSAGES = arrayOf(
         "그래도 기록 남긴 거, 잘했어.",
         "오늘 꽤 버티고 있네.",
         "오늘 쉽지 않은 날이네.\n여기까지 온 것도 충분해."
     )
 
+    /**
+     * 4번 이상 흔들릴 때 순환 방식으로 보여주는 메시지 목록.
+     * 메시지를 추가하거나 삭제해도 기존 로직에 영향이 없습니다.
+     * (인덱스를 배열 크기로 나눈 나머지를 사용하므로)
+     */
     private val ROTATING_MESSAGES = arrayOf(
         "마음이 조금 흔들리고 있네.",
         "지금 순간이 꽤 묵직하다.",
@@ -58,11 +79,23 @@ object ComfortMessageProvider {
         "오늘은 파도가 높다."
     )
 
+    /**
+     * 오늘 흔들림 횟수에 맞는 위로 메시지를 반환합니다.
+     *
+     * @param shakyCountToday 오늘 흔들림 버튼을 누른 횟수 (0 이상)
+     * @return 상황에 맞는 위로 메시지 문자열
+     *
+     * 선택 로직:
+     * - 0번 (기록 없음): 고정 메시지[0]
+     * - 1~3번: 고정 메시지[횟수-1]
+     * - 4번 이상: 순환 메시지[(횟수-4) % 메시지수]
+     */
     fun getMessage(shakyCountToday: Int): String {
         return when {
             shakyCountToday <= 0 -> FIXED_MESSAGES[0]
             shakyCountToday <= 3 -> FIXED_MESSAGES[shakyCountToday - 1]
             else -> {
+                // 4번째부터는 순환: 4→[0], 5→[1], 6→[2], ...
                 val index = (shakyCountToday - 4) % ROTATING_MESSAGES.size
                 ROTATING_MESSAGES[index]
             }
