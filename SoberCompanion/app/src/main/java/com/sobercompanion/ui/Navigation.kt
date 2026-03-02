@@ -91,14 +91,8 @@ fun SoberCompanionNavHost(
             )
         }
 
-        // 홈: 하위 화면들로 이동하는 허브
         composable(Screen.Home.route) {
-            HomeScreen(
-                onNavigateToDailyLog = { navController.navigate(Screen.DailyLog.route) },
-                onNavigateToStatistics = { navController.navigate(Screen.Statistics.route) },
-                onNavigateToMilestones = { navController.navigate(Screen.Milestones.route) },
-                onNavigateToSettings = { navController.navigate(Screen.Settings.route) }
-            )
+            HomeScreen()
         }
 
         // 이하 화면들은 모두 popBackStack()으로 홈으로 돌아갑니다
