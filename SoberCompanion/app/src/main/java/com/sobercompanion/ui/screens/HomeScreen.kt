@@ -12,11 +12,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -25,12 +31,46 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sobercompanion.ui.components.ComfortMessageCard
 import com.sobercompanion.util.ComfortMessageProvider
 import com.sobercompanion.viewmodel.MainViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+private val successMessages = listOf(
+    "잘 버텼어요 👍",
+    "기억해둘게요"
+)
+
+private val shakyMessages = listOf(
+    "심호흡 한번 해봐요",
+    "잠시 일어나서 물 한잔 가져와 보는 건 어때요?",
+    "눈을 감고 다른 할 일을 떠올려 보는 건 어때요?"
+)
+
+private val drinkMessages = listOf(
+    "괜찮아요",
+    "다시 시작하면 돼요"
+)
 
 @Composable
 fun HomeScreen(
     mainViewModel: MainViewModel = viewModel()
 ) {
     val uiState by mainViewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    fun showMessage(message: String) {
+        coroutineScope.launch {
+            snackbarHostState.currentSnackbarData?.dismiss()
+            val job = launch {
+                snackbarHostState.showSnackbar(
+                    message = message,
+                    duration = SnackbarDuration.Indefinite
+                )
+            }
+            delay(2000)
+            job.cancel()
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -49,7 +89,10 @@ fun HomeScreen(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     enabled = !uiState.hasRecordedToday,
-                    onClick = { mainViewModel.onTodaySuccess() }
+                    onClick = {
+                        mainViewModel.onTodaySuccess()
+                        showMessage(successMessages.random())
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -59,7 +102,10 @@ fun HomeScreen(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     enabled = true,
-                    onClick = { mainViewModel.onShaky() }
+                    onClick = {
+                        mainViewModel.onShaky()
+                        showMessage(shakyMessages.random())
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -69,12 +115,14 @@ fun HomeScreen(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     enabled = !uiState.hasRecordedToday,
-                    onClick = { mainViewModel.onDrink() }
+                    onClick = {
+                        mainViewModel.onDrink()
+                        showMessage(drinkMessages.random())
+                    }
                 )
             }
         }
 
-        // 3시간 후 상단에 조용히 표시되는 위로 메시지 카드
         ComfortMessageCard(
             show = uiState.comfortReady && !uiState.comfortShown,
             message = ComfortMessageProvider.getMessage(uiState.shakyCountToday),
@@ -83,6 +131,20 @@ fun HomeScreen(
                 .align(Alignment.TopCenter)
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         )
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 40.dp)
+        ) { data ->
+            Snackbar(
+                snackbarData = data,
+                shape = RoundedCornerShape(12.dp),
+                containerColor = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.93f),
+                contentColor = MaterialTheme.colorScheme.inverseOnSurface
+            )
+        }
     }
 }
 
