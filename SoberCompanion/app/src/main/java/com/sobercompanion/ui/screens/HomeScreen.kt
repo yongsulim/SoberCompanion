@@ -67,7 +67,7 @@ fun HomeScreen(
                     duration = SnackbarDuration.Indefinite
                 )
             }
-            delay(2000)
+            delay(3000)
             job.cancel()
         }
     }
