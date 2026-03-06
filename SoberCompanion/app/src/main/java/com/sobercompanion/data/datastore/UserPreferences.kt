@@ -16,17 +16,12 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "us
 class UserPreferencesRepository(private val context: Context) {
 
     private object PreferencesKeys {
-        val IS_ONBOARDING_COMPLETED = booleanPreferencesKey("is_onboarding_completed")
         val USER_NAME = stringPreferencesKey("user_name")
         val DAILY_REMINDER_ENABLED = booleanPreferencesKey("daily_reminder_enabled")
         val REMINDER_HOUR = intPreferencesKey("reminder_hour")
         val REMINDER_MINUTE = intPreferencesKey("reminder_minute")
         val THEME_MODE = stringPreferencesKey("theme_mode") // "system", "light", "dark"
         val SOBRIETY_GOAL_REASON = stringPreferencesKey("sobriety_goal_reason")
-    }
-
-    val isOnboardingCompleted: Flow<Boolean> = context.dataStore.data.map { preferences ->
-        preferences[PreferencesKeys.IS_ONBOARDING_COMPLETED] ?: false
     }
 
     val userName: Flow<String> = context.dataStore.data.map { preferences ->
@@ -49,12 +44,6 @@ class UserPreferencesRepository(private val context: Context) {
 
     val sobrietyGoalReason: Flow<String> = context.dataStore.data.map { preferences ->
         preferences[PreferencesKeys.SOBRIETY_GOAL_REASON] ?: ""
-    }
-
-    suspend fun setOnboardingCompleted(completed: Boolean) {
-        context.dataStore.edit { preferences ->
-            preferences[PreferencesKeys.IS_ONBOARDING_COMPLETED] = completed
-        }
     }
 
     suspend fun setUserName(name: String) {

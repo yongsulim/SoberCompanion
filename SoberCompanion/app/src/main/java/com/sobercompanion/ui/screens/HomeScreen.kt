@@ -1,214 +1,249 @@
 package com.sobercompanion.ui.screens
 
-import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.sobercompanion.data.RecordStatus
 import com.sobercompanion.ui.components.ComfortMessageCard
+import com.sobercompanion.ui.theme.AppBackground
+import com.sobercompanion.ui.theme.AppBorder
+import com.sobercompanion.ui.theme.AppSurface
+import com.sobercompanion.ui.theme.AppSurface2
+import com.sobercompanion.ui.theme.AppTextPrimary
+import com.sobercompanion.ui.theme.AppTextSecondary
+import com.sobercompanion.ui.theme.AppTextTertiary
+import com.sobercompanion.ui.theme.NotoSansKr
+import com.sobercompanion.ui.theme.NotoSerifKr
 import com.sobercompanion.util.ComfortMessageProvider
 import com.sobercompanion.viewmodel.MainViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-
-private val successMessages = listOf(
-    "잘 버텼어요 👍",
-    "기억해둘게요"
-)
-
-private val shakyMessages = listOf(
-    "심호흡 한번 해봐요",
-    "잠시 일어나서 물 한잔 가져와 보는 건 어때요?",
-    "눈을 감고 다른 할 일을 떠올려 보는 건 어때요?"
-)
-
-private val drinkMessages = listOf(
-    "괜찮아요",
-    "다시 시작하면 돼요"
-)
 
 @Composable
 fun HomeScreen(
     mainViewModel: MainViewModel = viewModel()
 ) {
     val uiState by mainViewModel.uiState.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
 
-    // '지금 좀 흔들려' 버튼 깜빡임 애니메이션
-    val infiniteTransition = rememberInfiniteTransition(label = "shaky_blink")
-    val shakyBlinkAlpha by infiniteTransition.animateFloat(
+    // 지금 좀 흔들려 버튼 우측 dot — 숨쉬는 애니메이션 (2.8초 주기)
+    val infiniteTransition = rememberInfiniteTransition(label = "breathe")
+    val dotAlpha by infiniteTransition.animateFloat(
         initialValue = 1f,
-        targetValue = 0.45f,
+        targetValue  = 0.35f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 800, easing = LinearEasing),
+            animation  = tween(1400, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
         ),
-        label = "shakyBlinkAlpha"
+        label = "dotAlpha"
+    )
+    val dotScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue  = 0.7f,
+        animationSpec = infiniteRepeatable(
+            animation  = tween(1400, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "dotScale"
     )
 
-    // 오늘 기록된 버튼 판별
-    val successSelected = uiState.hasRecordedToday && uiState.dailyStatus == RecordStatus.SUCCESS
-    val failSelected = uiState.hasRecordedToday && uiState.dailyStatus == RecordStatus.FAIL
-
-    fun showMessage(message: String) {
-        coroutineScope.launch {
-            snackbarHostState.currentSnackbarData?.dismiss()
-            val job = launch {
-                snackbarHostState.showSnackbar(
-                    message = message,
-                    duration = SnackbarDuration.Indefinite
-                )
-            }
-            delay(3000)
-            job.cancel()
-        }
-    }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                MainActionButton(
-                    text = "오늘은 버텼어",
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    enabled = !uiState.hasRecordedToday,
-                    isSelected = successSelected,
-                    onClick = {
-                        mainViewModel.onTodaySuccess()
-                        showMessage(successMessages.random())
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                // 깜빡임: containerColor에 직접 alpha 적용
-                MainActionButton(
-                    text = "지금 좀 흔들려",
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = shakyBlinkAlpha),
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    enabled = true,
-                    isSelected = true,
-                    onClick = {
-                        mainViewModel.onShaky()
-                        showMessage(shakyMessages.random())
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                MainActionButton(
-                    text = "마셨어",
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    enabled = !uiState.hasRecordedToday,
-                    isSelected = failSelected,
-                    onClick = {
-                        mainViewModel.onDrink()
-                        showMessage(drinkMessages.random())
-                    }
-                )
-            }
-        }
-
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppBackground)
+            .statusBarsPadding()
+    ) {
+        // ── 위로 메시지 카드 (상단, 조건부 표시) ─────────────────────────────
         ComfortMessageCard(
-            show = uiState.comfortReady && !uiState.comfortShown,
-            message = ComfortMessageProvider.getMessage(uiState.shakyCountToday),
+            show      = uiState.comfortReady && !uiState.comfortShown,
+            message   = ComfortMessageProvider.getMessage(uiState.shakyCountToday),
             onDismiss = { mainViewModel.onComfortMessageSeen() },
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+            modifier  = Modifier.padding(start = 24.dp, end = 24.dp, top = 16.dp)
         )
 
-        SnackbarHost(
-            hostState = snackbarHostState,
+        // ── 메인 콘텐츠 ───────────────────────────────────────────────────────
+        Column(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 40.dp)
-        ) { data ->
-            Snackbar(
-                snackbarData = data,
-                shape = RoundedCornerShape(12.dp),
-                containerColor = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.93f),
-                contentColor = MaterialTheme.colorScheme.inverseOnSurface
+                .weight(1f)
+                .padding(horizontal = 24.dp)
+                .navigationBarsPadding()
+                .padding(bottom = 32.dp)
+        ) {
+            Spacer(Modifier.height(52.dp))
+
+            // 눈썹 텍스트 "연속"
+            Text(
+                text          = "연속",
+                fontFamily    = NotoSansKr,
+                fontWeight    = FontWeight.Normal,
+                fontSize      = 11.sp,
+                color         = AppTextTertiary,
+                letterSpacing = 1.2.sp,
             )
+
+            Spacer(Modifier.height(10.dp))
+
+            // 연속 일수 숫자 + 단위
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(
+                    text          = "${uiState.currentStreak}",
+                    fontFamily    = NotoSerifKr,
+                    fontWeight    = FontWeight.Light,
+                    fontSize      = 48.sp,
+                    lineHeight    = 48.sp,
+                    color         = AppTextPrimary,
+                    letterSpacing = (-2).sp,
+                )
+                Spacer(Modifier.width(4.dp))
+                Text(
+                    text          = "일째 버티는 중",
+                    fontFamily    = NotoSerifKr,
+                    fontWeight    = FontWeight.Light,
+                    fontSize      = 22.sp,
+                    color         = AppTextSecondary,
+                    letterSpacing = (-0.5).sp,
+                    modifier      = Modifier.padding(bottom = 5.dp),
+                )
+            }
+
+            Spacer(Modifier.height(10.dp))
+
+            // 시작 날짜 부제
+            val startText = uiState.startDate?.let {
+                "${it.year}년 ${it.monthValue}월 ${it.dayOfMonth}일부터"
+            } ?: ""
+            if (startText.isNotEmpty()) {
+                Text(
+                    text          = startText,
+                    fontFamily    = NotoSansKr,
+                    fontWeight    = FontWeight.Light,
+                    fontSize      = 12.5.sp,
+                    color         = AppTextTertiary,
+                    letterSpacing = (-0.1).sp,
+                )
+            }
+
+            // 구분선
+            Spacer(Modifier.height(36.dp))
+            HorizontalDivider(thickness = 1.dp, color = AppBorder)
+            Spacer(Modifier.height(28.dp))
+
+            // 버튼 그룹 or "오늘 기록했어"
+            if (uiState.hasRecordedToday) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 28.dp, bottom = 20.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text          = "오늘 기록했어",
+                        fontFamily    = NotoSerifKr,
+                        fontWeight    = FontWeight.Light,
+                        fontSize      = 17.sp,
+                        color         = AppTextSecondary,
+                        letterSpacing = (-0.4).sp,
+                    )
+                }
+                ActionCard(
+                    label    = "지금 좀 흔들려",
+                    dotAlpha = dotAlpha,
+                    dotScale = dotScale,
+                    onClick  = { mainViewModel.onShaky() }
+                )
+            } else {
+                Column(verticalArrangement = Arrangement.spacedBy(11.dp)) {
+                    ActionCard(
+                        label   = "오늘은 버텼어",
+                        onClick = { mainViewModel.onTodaySuccess() }
+                    )
+                    ActionCard(
+                        label    = "지금 좀 흔들려",
+                        dotAlpha = dotAlpha,
+                        dotScale = dotScale,
+                        onClick  = { mainViewModel.onShaky() }
+                    )
+                    ActionCard(
+                        label   = "마셨어",
+                        onClick = { mainViewModel.onDrink() }
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun MainActionButton(
-    text: String,
-    containerColor: Color,
-    contentColor: Color,
-    enabled: Boolean,
-    isSelected: Boolean,
+private fun ActionCard(
+    label: String,
+    dotAlpha: Float = 1f,
+    dotScale: Float = 1f,
     onClick: () -> Unit
 ) {
-    Button(
-        onClick = onClick,
-        enabled = enabled,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(
-            // 기본(미기록): 흐리게
-            containerColor = if (isSelected) containerColor else containerColor.copy(alpha = 0.4f),
-            contentColor = if (isSelected) contentColor else contentColor.copy(alpha = 0.4f),
-            // 비활성: 기록된 버튼은 선명하게, 나머지는 더 흐리게
-            disabledContainerColor = if (isSelected) containerColor else containerColor.copy(alpha = 0.2f),
-            disabledContentColor = if (isSelected) contentColor else contentColor.copy(alpha = 0.3f)
-        ),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp
-        )
+    Card(
+        onClick   = onClick,
+        modifier  = Modifier.fillMaxWidth(),
+        shape     = RoundedCornerShape(18.dp),
+        colors    = CardDefaults.cardColors(containerColor = AppSurface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        border    = BorderStroke(1.dp, AppBorder),
     ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Medium
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 22.dp, vertical = 19.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment     = Alignment.CenterVertically
+        ) {
+            Text(
+                text          = label,
+                fontFamily    = NotoSansKr,
+                fontWeight    = FontWeight.Normal,
+                fontSize      = 15.5.sp,
+                color         = AppTextPrimary,
+                letterSpacing = (-0.4).sp,
+            )
+            // 우측 dot — 지금 좀 흔들려만 dotAlpha/dotScale 애니메이션 적용
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .scale(dotScale)
+                    .alpha(dotAlpha)
+                    .clip(CircleShape)
+                    .background(AppSurface2)
+            )
+        }
     }
 }
