@@ -27,10 +27,13 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
+import android.os.VibrationEffect
+import android.os.Vibrator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -177,11 +180,11 @@ fun HomeScreen(
                         letterSpacing = (-0.4).sp,
                     )
                 }
-                ActionCard(
-                    label    = "지금 좀 흔들려",
-                    dotAlpha = dotAlpha,
-                    dotScale = dotScale,
-                    onClick  = { mainViewModel.onShaky() }
+                ShakyCard(
+                    shakyCount = uiState.shakyCountToday,
+                    dotAlpha   = dotAlpha,
+                    dotScale   = dotScale,
+                    onClick    = { mainViewModel.onShaky() }
                 )
             } else {
                 Column(verticalArrangement = Arrangement.spacedBy(11.dp)) {
@@ -189,11 +192,11 @@ fun HomeScreen(
                         label   = "오늘은 버텼어",
                         onClick = { mainViewModel.onTodaySuccess() }
                     )
-                    ActionCard(
-                        label    = "지금 좀 흔들려",
-                        dotAlpha = dotAlpha,
-                        dotScale = dotScale,
-                        onClick  = { mainViewModel.onShaky() }
+                    ShakyCard(
+                        shakyCount = uiState.shakyCountToday,
+                        dotAlpha   = dotAlpha,
+                        dotScale   = dotScale,
+                        onClick    = { mainViewModel.onShaky() }
                     )
                     ActionCard(
                         label   = "마셨어",
@@ -201,6 +204,45 @@ fun HomeScreen(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun ShakyCard(
+    shakyCount: Int,
+    dotAlpha: Float,
+    dotScale: Float,
+    onClick: () -> Unit
+) {
+    val context  = LocalContext.current
+    val vibrator = context.getSystemService(Vibrator::class.java)
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        ActionCard(
+            label    = "지금 좀 흔들려",
+            dotAlpha = dotAlpha,
+            dotScale = dotScale,
+            onClick  = {
+                vibrator?.vibrate(
+                    VibrationEffect.createOneShot(40, VibrationEffect.DEFAULT_AMPLITUDE)
+                )
+                onClick()
+            }
+        )
+
+        // 누른 횟수만큼 점 표시 (최대 5개)
+        if (shakyCount > 0) {
+            val dots = List(minOf(shakyCount, 5)) { "·" }.joinToString("  ")
+            Text(
+                text          = dots,
+                fontFamily    = NotoSansKr,
+                fontWeight    = FontWeight.Light,
+                fontSize      = 12.sp,
+                color         = AppTextTertiary,
+                modifier      = Modifier.padding(top = 8.dp),
+                letterSpacing = 0.sp,
+            )
         }
     }
 }
