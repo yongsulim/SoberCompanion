@@ -19,15 +19,25 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        // 한국어 + 영어만 포함 (80개 언어 리소스 제거 → 용량 대폭 감소)
+        resourceConfigurations += listOf("ko", "en")
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // R8 코드 축소 + 난독화
+            isMinifyEnabled = true
+            // 사용하지 않는 리소스 제거
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            isMinifyEnabled = false
+            isDebuggable = true
         }
     }
 
@@ -42,6 +52,12 @@ android {
 
     buildFeatures {
         compose = true
+        // 사용하지 않는 빌드 기능 비활성화 (빌드 시간 단축)
+        buildConfig = false
+        aidl = false
+        renderScript = false
+        resValues = false
+        shaders = false
     }
 
     composeOptions {
@@ -50,7 +66,16 @@ android {
 
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += setOf(
+                "/META-INF/{AL2.0,LGPL2.1}",
+                "/META-INF/DEPENDENCIES",
+                "/META-INF/LICENSE*",
+                "/META-INF/NOTICE*",
+                "/META-INF/*.kotlin_module",
+                "DebugProbesKt.bin",
+                "kotlin-tooling-metadata.json",
+                "*.proto",
+            )
         }
     }
 }
@@ -67,6 +92,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    // material-icons-extended: R8가 실제 사용 아이콘(EmojiEvents 등)만 남기고 제거
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.ui:ui-text-google-fonts")
 

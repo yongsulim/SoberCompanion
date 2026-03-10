@@ -231,19 +231,17 @@ private fun ShakyCard(
             }
         )
 
-        // 누른 횟수만큼 점 표시 (최대 5개)
-        if (shakyCount > 0) {
-            val dots = List(minOf(shakyCount, 5)) { "·" }.joinToString("  ")
-            Text(
-                text          = dots,
-                fontFamily    = NotoSansKr,
-                fontWeight    = FontWeight.Light,
-                fontSize      = 12.sp,
-                color         = AppTextTertiary,
-                modifier      = Modifier.padding(top = 8.dp),
-                letterSpacing = 0.sp,
-            )
-        }
+        // 누른 횟수만큼 점 표시 (최대 5개) — 공간 항상 예약해서 레이아웃 점프 방지
+        val dots = if (shakyCount > 0) List(minOf(shakyCount, 5)) { "·" }.joinToString("  ") else ""
+        Text(
+            text          = dots,
+            fontFamily    = NotoSansKr,
+            fontWeight    = FontWeight.Light,
+            fontSize      = 12.sp,
+            color         = AppTextTertiary,
+            modifier      = Modifier.padding(top = 8.dp),
+            letterSpacing = 0.sp,
+        )
     }
 }
 

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.sobercompanion.app-mergeDebugResources-61:/values-v23/values-v23.xml",
+            "outputFile": "com.sobercompanion.app-mergeDebugResources-60:/values-v23/values-v23.xml",
             "map": [
                 {
                     "source": "/Users/elob/.gradle/caches/transforms-3/7eef15c54a1633d2d01d808fc4942b92/transformed/work-runtime-2.9.0/res/values-v23/values-v23.xml",

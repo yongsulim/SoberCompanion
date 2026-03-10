@@ -1,22 +1,26 @@
 [
     {
-        "merged": "com.sobercompanion.app-merged_res-63:/drawable_ic_launcher_background.xml.flat",
-        "source": "com.sobercompanion.app-main-65:/drawable/ic_launcher_background.xml"
+        "merged": "/Users/elob/.gradle/daemon/8.5/com.sobercompanion.app-merged_res-62:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "/Users/elob/.gradle/daemon/8.5/com.sobercompanion.app-main-64:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
-        "merged": "com.sobercompanion.app-merged_res-63:/drawable_ic_launcher_foreground.xml.flat",
-        "source": "com.sobercompanion.app-main-65:/drawable/ic_launcher_foreground.xml"
+        "merged": "/Users/elob/.gradle/daemon/8.5/com.sobercompanion.app-merged_res-62:/drawable_ic_notification.xml.flat",
+        "source": "/Users/elob/.gradle/daemon/8.5/com.sobercompanion.app-main-64:/drawable/ic_notification.xml"
     },
     {
-        "merged": "com.sobercompanion.app-merged_res-63:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "com.sobercompanion.app-main-65:/mipmap-anydpi-v26/ic_launcher_round.xml"
+        "merged": "/Users/elob/.gradle/daemon/8.5/com.sobercompanion.app-merged_res-62:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "/Users/elob/.gradle/daemon/8.5/com.sobercompanion.app-main-64:/drawable/ic_launcher_foreground.xml"
     },
     {
-        "merged": "com.sobercompanion.app-merged_res-63:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "com.sobercompanion.app-main-65:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "com.sobercompanion.app-merged_res-62:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.sobercompanion.app-main-64:/drawable/ic_launcher_foreground.xml"
     },
     {
-        "merged": "com.sobercompanion.app-merged_res-63:/drawable_ic_notification.xml.flat",
-        "source": "com.sobercompanion.app-main-65:/drawable/ic_notification.xml"
+        "merged": "/Users/elob/.gradle/daemon/8.5/com.sobercompanion.app-merged_res-62:/drawable_ic_launcher_background.xml.flat",
+        "source": "/Users/elob/.gradle/daemon/8.5/com.sobercompanion.app-main-64:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "/Users/elob/.gradle/daemon/8.5/com.sobercompanion.app-merged_res-62:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "/Users/elob/.gradle/daemon/8.5/com.sobercompanion.app-main-64:/mipmap-anydpi-v26/ic_launcher.xml"
     }
 ]

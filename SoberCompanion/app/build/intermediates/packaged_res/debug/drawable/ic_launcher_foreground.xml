@@ -5,19 +5,19 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- 왼쪽 원  cx=38.18  cy=54  r=6.12  #9E9890 -->
+    <!-- 왼쪽 원  cx=55  cy=84  r=9  #9E9890 -->
     <path
         android:fillColor="#9E9890"
-        android:pathData="M 32.06,54 a 6.12,6.12 0 1,0 12.24,0 a 6.12,6.12 0 1,0 -12.24,0" />
+        android:pathData="M 46,84 a 9,9 0 1,0 18,0 a 9,9 0 1,0 -18,0" />
 
-    <!-- 가운데 원  cx=54  cy=54  r=6.12  #8A8680 -->
+    <!-- 가운데 원  cx=77  cy=84  r=9  #7A7672 -->
     <path
-        android:fillColor="#8A8680"
-        android:pathData="M 47.88,54 a 6.12,6.12 0 1,0 12.24,0 a 6.12,6.12 0 1,0 -12.24,0" />
+        android:fillColor="#7A7672"
+        android:pathData="M 68,84 a 9,9 0 1,0 18,0 a 9,9 0 1,0 -18,0" />
 
-    <!-- 오른쪽 원  cx=69.82  cy=54  r=6.12  #6E6A64 -->
+    <!-- 오른쪽 원  cx=99  cy=84  r=9  #6A6560 -->
     <path
-        android:fillColor="#6E6A64"
-        android:pathData="M 63.70,54 a 6.12,6.12 0 1,0 12.24,0 a 6.12,6.12 0 1,0 -12.24,0" />
+        android:fillColor="#6A6560"
+        android:pathData="M 90,84 a 9,9 0 1,0 18,0 a 9,9 0 1,0 -18,0" />
 
 </vector>

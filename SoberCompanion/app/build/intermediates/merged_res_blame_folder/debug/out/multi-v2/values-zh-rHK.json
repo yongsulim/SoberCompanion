@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.sobercompanion.app-mergeDebugResources-61:/values-zh-rHK/values-zh-rHK.xml",
+            "outputFile": "com.sobercompanion.app-mergeDebugResources-60:/values-zh-rHK/values-zh-rHK.xml",
             "map": [
                 {
                     "source": "/Users/elob/.gradle/caches/transforms-3/004cb6215f6c0a6c3cdcf2731da115e5/transformed/foundation-release/res/values-zh-rHK/values-zh-rHK.xml",

@@ -57,9 +57,8 @@ com.sobercompanion.app-ui-tooling-preview-release-55 /Users/elob/.gradle/caches/
 com.sobercompanion.app-lifecycle-runtime-ktx-2.6.2-56 /Users/elob/.gradle/caches/transforms-3/d3470fb5830c2fc3b4a32c24fa9bad56/transformed/lifecycle-runtime-ktx-2.6.2/res
 com.sobercompanion.app-lifecycle-viewmodel-compose-2.6.2-57 /Users/elob/.gradle/caches/transforms-3/d7c91af529fb19f2ff7759347cdf6ed7/transformed/lifecycle-viewmodel-compose-2.6.2/res
 com.sobercompanion.app-annotation-experimental-1.4.0-58 /Users/elob/.gradle/caches/transforms-3/e00e2efc8299605899cf1f4275351310/transformed/annotation-experimental-1.4.0/res
-com.sobercompanion.app-resValues-59 /Users/elob/Desktop/start/SoberCompanion/app/build/generated/res/resValues/debug
-com.sobercompanion.app-packageDebugResources-60 /Users/elob/Desktop/start/SoberCompanion/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
-com.sobercompanion.app-packageDebugResources-61 /Users/elob/Desktop/start/SoberCompanion/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
-com.sobercompanion.app-merged_res-62 /Users/elob/Desktop/start/SoberCompanion/app/build/intermediates/merged_res/debug
-com.sobercompanion.app-debug-63 /Users/elob/Desktop/start/SoberCompanion/app/src/debug/res
-com.sobercompanion.app-main-64 /Users/elob/Desktop/start/SoberCompanion/app/src/main/res
+com.sobercompanion.app-packageDebugResources-59 /Users/elob/Desktop/start/SoberCompanion/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.sobercompanion.app-packageDebugResources-60 /Users/elob/Desktop/start/SoberCompanion/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.sobercompanion.app-merged_res-61 /Users/elob/Desktop/start/SoberCompanion/app/build/intermediates/merged_res/debug
+com.sobercompanion.app-debug-62 /Users/elob/Desktop/start/SoberCompanion/app/src/debug/res
+com.sobercompanion.app-main-63 /Users/elob/Desktop/start/SoberCompanion/app/src/main/res
