@@ -3,7 +3,7 @@ package com.sobercompanion.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // ── Light palette (HTML reference: today-with-you.html) ──────────────────────
-val AppBackground    = Color(0xFFEDEAE4)  // --bg
+val AppBackground    = Color(0xFFE4E0D9)  // --bg
 val AppSurface       = Color(0xFFF7F5F1)  // --surface (카드/버튼)
 val AppSurface2      = Color(0xFFE5E2DC)  // --surface-2 (버튼 우측 dot)
 val AppTextPrimary   = Color(0xFF2A2825)  // --text-primary

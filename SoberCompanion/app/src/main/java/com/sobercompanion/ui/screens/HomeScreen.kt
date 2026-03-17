@@ -218,36 +218,24 @@ private fun ShakyCard(
     val context  = LocalContext.current
     val vibrator = context.getSystemService(Vibrator::class.java)
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        ActionCard(
-            label    = "지금 좀 흔들려",
-            dotAlpha = dotAlpha,
-            dotScale = dotScale,
-            onClick  = {
-                vibrator?.vibrate(
-                    VibrationEffect.createOneShot(40, VibrationEffect.DEFAULT_AMPLITUDE)
-                )
-                onClick()
-            }
-        )
-
-        // 누른 횟수만큼 점 표시 (최대 5개) — 공간 항상 예약해서 레이아웃 점프 방지
-        val dots = if (shakyCount > 0) List(minOf(shakyCount, 5)) { "·" }.joinToString("  ") else ""
-        Text(
-            text          = dots,
-            fontFamily    = NotoSansKr,
-            fontWeight    = FontWeight.Light,
-            fontSize      = 12.sp,
-            color         = AppTextTertiary,
-            modifier      = Modifier.padding(top = 8.dp),
-            letterSpacing = 0.sp,
-        )
-    }
+    ActionCard(
+        label    = "지금 좀 흔들려",
+        dotCount = shakyCount,
+        dotAlpha = dotAlpha,
+        dotScale = dotScale,
+        onClick  = {
+            vibrator?.vibrate(
+                VibrationEffect.createOneShot(40, VibrationEffect.DEFAULT_AMPLITUDE)
+            )
+            onClick()
+        }
+    )
 }
 
 @Composable
 private fun ActionCard(
     label: String,
+    dotCount: Int = 0,
     dotAlpha: Float = 1f,
     dotScale: Float = 1f,
     onClick: () -> Unit
@@ -275,15 +263,21 @@ private fun ActionCard(
                 color         = AppTextPrimary,
                 letterSpacing = (-0.4).sp,
             )
-            // 우측 dot — 지금 좀 흔들려만 dotAlpha/dotScale 애니메이션 적용
-            Box(
-                modifier = Modifier
-                    .size(8.dp)
-                    .scale(dotScale)
-                    .alpha(dotAlpha)
-                    .clip(CircleShape)
-                    .background(AppSurface2)
-            )
+            // 흔들려 버튼에만 dotCount > 0 이면 점 표시 (최대 5개)
+            if (dotCount > 0) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    repeat(minOf(dotCount, 5)) {
+                        Box(
+                            modifier = Modifier
+                                .size(8.dp)
+                                .scale(dotScale)
+                                .alpha(dotAlpha)
+                                .clip(CircleShape)
+                                .background(AppSurface2)
+                        )
+                    }
+                }
+            }
         }
     }
 }
