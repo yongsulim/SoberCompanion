@@ -14,7 +14,6 @@
 -keepattributes Signature
 -keepattributes EnclosingMethod
 -keep class kotlin.Metadata { *; }
--dontwarn kotlin.**
 
 # Kotlin Coroutines
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
@@ -22,7 +21,7 @@
 -dontwarn kotlinx.coroutines.**
 
 # ============================================================
-# WorkManager
+# WorkManager - Worker 클래스는 리플렉션으로 생성됨
 # ============================================================
 -keep class * extends androidx.work.Worker
 -keep class * extends androidx.work.ListenableWorker {
@@ -38,13 +37,13 @@
 }
 
 # ============================================================
-# Compose
+# Compose - Kotlin 2.0 + R8 fullMode가 자체 처리, 별도 keep 불필요
+# (이전의 -keep class androidx.compose.** 는 R8 최적화를 방해하므로 제거)
 # ============================================================
--dontwarn androidx.compose.**
--keep class androidx.compose.** { *; }
 
 # ============================================================
-# App 클래스 보호 (Data 모델)
+# App - WorkManager Worker만 명시적 보호 (나머지는 R8이 최적화)
 # ============================================================
--keep class com.sobercompanion.data.** { *; }
--keep class com.sobercompanion.util.** { *; }
+-keep class com.sobercompanion.workers.** {
+    public <init>(android.content.Context, androidx.work.WorkerParameters);
+}
